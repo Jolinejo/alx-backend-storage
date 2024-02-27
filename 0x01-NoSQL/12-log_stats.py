@@ -17,10 +17,11 @@ def log():
     listi = ["GET", "POST", "PUT", "PATCH", "DELETE"]
     for elem in listi:
         num = collection.count_documents({"method": elem})
-        print("\tmethod {}: {}".format(elem, num))
+        print("\t method {}: {}".format(elem, num))
 
     stat = collection.count_documents({"method": "GET", "path": "/status"})
     print("{} status check".format(stat))
+
 
 if __name__ == "__main__":
     log()
