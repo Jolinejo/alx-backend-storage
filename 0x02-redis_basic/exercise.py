@@ -25,7 +25,7 @@ class Cache:
         """convert into original type"""
         val = self._redis.get(key)
         if fn:
-            return fn(data)
+            return fn(val)
         return val
 
     def get_str(self, key: str):
