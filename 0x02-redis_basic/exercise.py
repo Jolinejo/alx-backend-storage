@@ -9,6 +9,20 @@ import functools
 from typing import Union, Callable
 
 
+def call_history(method: Callable) -> Callable:
+    """create input output list"""
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """wrapper decorator"""
+        ip = method.__qualname__ + ":inputs"
+        op = method.__qualname__ + ":outputs"
+        self._redis.rpush(ip, str(args))
+        out = method(self, *args, **kwargs)
+        self._redis.rpush(op, out)
+        return out
+    return wrapper
+
+
 def count_calls(method: Callable) -> Callable:
     """creates wrapper"""
     @functools.wraps(method)
@@ -27,6 +41,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store key and val"""
