@@ -33,17 +33,21 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def replay(method):
-        """get everything back"""
-        calls = method.__self__.get_str(method.__qualname__)
-        name = method.__qualname__
-        print("{} was called {} times:".format(name, calls))
-        key = method.__qualname__ + ":inputs"
-        ip = method.__self__._redis.lrange(key, 0, -1)
-        key = method.__qualname__ + ":outputs"
-        op = method.__self__._redis.lrange(key, 0, -1)
-        for i, o in zip(ip, op):
-            print("{} (*{}) -> {}".format(name, i.decode("utf-8"), o.decode("utf-8")))
+    """get everything back"""
+    calls = method.__self__.get_str(method.__qualname__)
+    name = method.__qualname__
+    print("{} was called {} times:".format(name, calls))
+    key = method.__qualname__ + ":inputs"
+    ip = method.__self__._redis.lrange(key, 0, -1)
+    key = method.__qualname__ + ":outputs"
+    op = method.__self__._redis.lrange(key, 0, -1)
+    for i, o in zip(ip, op):
+        i = i.decode("utf-8")
+        o = o.decode("utf-8")
+        print("{}(*{}) -> {}".format(name, i, o))
+
 
 class Cache:
     """cache class using redis"""
