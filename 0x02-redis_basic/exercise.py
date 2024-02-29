@@ -68,7 +68,7 @@ class Cache:
         """get everything back"""
         calls = self.get_str(method.__qualname__)
         name = method.__qualname__
-        print("Cache.{} was called {} times:".format(name, calls))
+        print("{} was called {} times:".format(name, calls))
         key = method.__qualname__ + ":inputs"
         ip = self.__redis.lrange(key, 0, -1)
         key = method.__qualname__ + ":outputs"
